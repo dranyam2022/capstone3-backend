@@ -43,16 +43,13 @@ router.patch('/:courseId/update', auth.verify, (request, response) => {
 	})
 })
 
-// MINI ACTIVITY (30 mins.)
-// Create a route and a controller function for setting the isActive field of a course to false
-// The user must be logged in to archive a course
-// The endpoint must be '/archive'
-// The response must be 'The course has been archived successfully!'
-// Send screenshot of response from postman to our hangouts GC
+// Archive single course
 router.patch('/:courseId/archive', auth.verify, (request, response) => {
 	CourseController.archiveCourse(request.params.courseId).then((result) => {
 		response.send(result)
 	})
 })
+
+
 
 module.exports = router 
