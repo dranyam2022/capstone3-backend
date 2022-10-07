@@ -19,7 +19,9 @@ module.exports.addCourse = (data) => {
 		})
 	}
 
-	let message = Promise.resolve('User must be ADMIN to access this.')
+	let message = Promise.resolve({
+		message: 'User must be ADMIN to access this.'
+	})
 
 	return message.then((value) => {
 		return value
