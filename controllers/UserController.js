@@ -4,8 +4,8 @@ const bcrypt = require('bcrypt')
 const auth = require('../auth')
 
 module.exports.checkIfEmailExists = (data) => {
-	return User.find({email: data.email}).then((result) => {
-		if(result.length > 0){
+	return User.find({ email: data.email }).then((result) => {
+		if (result.length > 0) {
 			return true
 		}
 
@@ -25,8 +25,8 @@ module.exports.register = (data) => {
 	})
 
 	return new_user.save().then((created_user, error) => {
-		if(error){
-			return false 
+		if (error) {
+			return false
 		}
 
 		return {
@@ -36,8 +36,8 @@ module.exports.register = (data) => {
 }
 
 module.exports.login = (data) => {
-	return User.findOne({email: data.email}).then((result) => {
-		if(result == null){
+	return User.findOne({ email: data.email }).then((result) => {
+		if (result == null) {
 			return {
 				message: "User doesn't exist!"
 			}
@@ -45,7 +45,7 @@ module.exports.login = (data) => {
 
 		const is_password_correct = bcrypt.compareSync(data.password, result.password)
 
-		if(is_password_correct) {
+		if (is_password_correct) {
 			return {
 				accessToken: auth.createAccessToken(result)
 			}
@@ -57,11 +57,21 @@ module.exports.login = (data) => {
 	})
 }
 
-module.exports.getUserDetails = (user_id) => {
-	return User.findById(user_id, {password: 0}).then((result) => {
-		return result
-	})
-}
+// PASTE TO CONTROLLER
+
+// Get single user based on ID from token
+module.exports.getProfile = (data) => {
+
+	return User.findById(data.userId).then(result => {
+
+		// Makes the password not be included in the result
+		result.password = "";
+
+		// Returns the user information with the password as an empty string
+		return result;
+
+	});
+};
 
 module.exports.enroll = async (data) => {
 	// Check if user is done adding the course to its enrollments array
@@ -71,12 +81,12 @@ module.exports.enroll = async (data) => {
 		})
 
 		return user.save().then((updated_user, error) => {
-			if(error){
+			if (error) {
 				return false
 			}
 
 			return true
-		}) 
+		})
 	})
 
 	// Check if course is done adding the user to its enrollees array
@@ -86,16 +96,16 @@ module.exports.enroll = async (data) => {
 		})
 
 		return course.save().then((updated_course, error) => {
-			if(error){
+			if (error) {
 				return false
 			}
 
 			return true
-		}) 
+		})
 	})
 
 	// Check if both the user and course have been updated successfully, and return a success message if so
-	if(is_user_updated && is_course_updated){
+	if (is_user_updated && is_course_updated) {
 		return {
 			message: 'User enrollment is successful!'
 		}

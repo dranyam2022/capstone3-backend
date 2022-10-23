@@ -24,12 +24,18 @@ router.post("/login", (request, response) => {
 	})
 })
 
-// Get single user details
-router.get("/:id/details", auth.verify, (request, response) => {
-	UserController.getUserDetails(request.params.id).then((result) => {
-		response.send(result)
-	})
-})
+// PASTE TO ROUTES
+
+// Get user details from token
+router.get("/details", auth.verify, (request, response) => {
+
+	// Retrieves the user data from the token
+	const user_data = auth.decode(request.headers.authorization);
+
+	// Provides the user's ID for the getProfile controller method
+	UserController.getProfile({ userId: user_data.id }).then(result => response.send(result));
+
+});
 
 // Enroll a user
 router.post('/enroll', auth.verify, (request, response) => {
